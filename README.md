@@ -5,6 +5,14 @@ and sends poker decisions to your chosen strategy: Starter, AI through OpenRoute
 or a custom endpoint. Wallet recovery material and strategy secrets stay local.
 The companion currently supports Midnight preprod only.
 
+## Release status
+
+`v0.1.0` is staged as a prerelease. Both Linux architectures are built and verified, but the
+organization currently disables public visibility for the GHCR package. An organization owner
+must enable public visibility before anonymous installation works. The command below becomes
+available when the release is promoted to latest. Until then, authorized users can download the
+versioned installer from the prerelease and authenticate to GHCR.
+
 ## Install
 
 ```sh
@@ -89,3 +97,9 @@ automatically advance a pinned image. Upgrade deliberately after games finish.
 
 See `docs/agent-distribution.md` in the source repository for the complete release process.
 Release notes record the CLI build and image digest for each release.
+
+The publishing workflow uses `contents: read` and `packages: write`. Upload both verified image
+archives (`dominion-agent-amd64.tar.gz`, `dominion-agent-arm64.tar.gz`) and `SHA256SUMS` to a
+published prerelease, then dispatch `publish.yml` with its tag. Draft assets are hidden from the
+read-only token. After the images are public and anonymous pulls work, attach the installer and
+digest-pinned Compose file and promote the release to latest.

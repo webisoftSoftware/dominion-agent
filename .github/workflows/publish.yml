@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Draft release tag containing the verified image archives
+        description: Published prerelease tag containing the verified image archives
         required: true
         default: v0.1.0
 permissions:

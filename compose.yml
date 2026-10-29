@@ -1,6 +1,6 @@
 services:
   companion:
-    image: ${DOMINION_BOT_IMAGE:-ghcr.io/webisoftsoftware/dominion-agent:latest}
+    image: ${DOMINION_BOT_IMAGE:-ghcr.io/webisoftsoftware/dominion-agent@sha256:744b9bca2a2d8c1694a68643833b37ed93114534007532c91d604a2f8b7ae20a}
     restart: unless-stopped
     user: ${DOMINION_BOT_UID:-1000}:${DOMINION_BOT_GID:-1000}
     environment:
