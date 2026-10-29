@@ -1,0 +1,38 @@
+name: Publish verified images
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Draft release tag containing the verified image archives
+        required: true
+        default: v0.1.0
+permissions:
+  contents: read
+  packages: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ inputs.tag }}
+    steps:
+      - name: Publish release images
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          version=${RELEASE_TAG#v}
+          image=ghcr.io/webisoftsoftware/dominion-agent
+          mkdir images
+          cd images
+          gh release download "$RELEASE_TAG" --pattern 'dominion-agent-*.tar.gz' --pattern 'SHA256SUMS'
+          sha256sum --check SHA256SUMS
+          printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          for arch in amd64 arm64; do
+            docker load --input "dominion-agent-$arch.tar.gz"
+            docker push "$image:$version-$arch"
+          done
+          docker buildx imagetools create --tag "$image:$version" --tag "$image:latest" \
+            "$image:$version-amd64" "$image:$version-arm64"
+          docker buildx imagetools inspect "$image:$version"

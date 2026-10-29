@@ -1,0 +1,27 @@
+services:
+  companion:
+    image: ${DOMINION_BOT_IMAGE:-ghcr.io/webisoftsoftware/dominion-agent:latest}
+    restart: unless-stopped
+    user: ${DOMINION_BOT_UID:-1000}:${DOMINION_BOT_GID:-1000}
+    environment:
+      ONE_AM_HOME: /data/1am
+      ONE_AM_WALLET_PASSWORD: ${ONE_AM_WALLET_PASSWORD:-}
+      BOT_CONFIG_PATH: /data/bot.json
+      BOT_MAX_PROCESSES: ${BOT_MAX_PROCESSES:-64}
+      BOT_MAX_AGENTS: ${BOT_MAX_AGENTS:-64}
+      BOT_MAX_PENDING_ASSIGNMENTS: ${BOT_MAX_PENDING_ASSIGNMENTS:-16}
+      DOMINION_BOT_HOST: ${DOMINION_BOT_HOST:-}
+      DOMINION_SITE_URL: ${DOMINION_SITE_URL:-}
+      POKER_PROOF_SERVER_URL: ${POKER_PROOF_SERVER_URL:-https://api-preprod.1am.xyz}
+      POKER_PROOF_SERVER_API_KEY: ${POKER_PROOF_SERVER_API_KEY:-}
+    volumes:
+      - ./data:/data
+      - ./:/config
+
+  strategy:
+    image: python:3.12-slim
+    command: ["sh", "-c", "while [ ! -f /bot/.dominion-runner.py ]; do sleep 1; done; exec python /bot/.dominion-runner.py"]
+    restart: unless-stopped
+    user: ${DOMINION_BOT_UID:-1000}:${DOMINION_BOT_GID:-1000}
+    volumes:
+      - ./bot:/bot:ro
