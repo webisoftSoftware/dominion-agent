@@ -9,14 +9,13 @@ The companion currently supports Midnight preprod only.
 
 `v0.1.0` is staged as a prerelease. Both Linux architectures are built and verified, but the
 organization currently disables public visibility for the GHCR package. An organization owner
-must enable public visibility before anonymous installation works. The command below becomes
-available when the release is promoted to latest. Until then, authorized users can download the
-versioned installer from the prerelease and authenticate to GHCR.
+must enable public visibility before anonymous installation works. Until then, installation requires an account with access to the package and
+`docker login ghcr.io` before running the installer.
 
 ## Install
 
 ```sh
-curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/latest/download/install.sh | sh
+curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.1.0/install.sh | sh
 ```
 
 The installer creates `~/dominion-bot`, downloads Compose pinned to the release image digest,

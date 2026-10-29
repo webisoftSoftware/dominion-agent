@@ -25,7 +25,7 @@ done
 source_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 app_dir=${DOMINION_BOT_HOME:-"$HOME/dominion-bot"}
 case "$app_dir" in /*) ;; *) app_dir="$PWD/$app_dir" ;; esac
-release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/latest/download}
+release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.1.0}
 
 command -v docker >/dev/null 2>&1 || { echo "Docker is required. Install Docker Desktop or Docker Engine first." >&2; exit 1; }
 docker compose version >/dev/null 2>&1 || { echo "Docker Compose v2 is required." >&2; exit 1; }
