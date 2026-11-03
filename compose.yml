@@ -1,6 +1,6 @@
 services:
   companion:
-    image: ${DOMINION_BOT_IMAGE:-ghcr.io/webisoftsoftware/dominion-agent@sha256:744b9bca2a2d8c1694a68643833b37ed93114534007532c91d604a2f8b7ae20a}
+    image: ${DOMINION_BOT_IMAGE:-ghcr.io/webisoftsoftware/dominion-agent@sha256:47316aef0180bc0a37f0cda408530015f74d592ec720e4b92cfe999d0d07c392}
     restart: unless-stopped
     user: ${DOMINION_BOT_UID:-1000}:${DOMINION_BOT_GID:-1000}
     environment:
@@ -12,7 +12,7 @@ services:
       BOT_MAX_PENDING_ASSIGNMENTS: ${BOT_MAX_PENDING_ASSIGNMENTS:-16}
       DOMINION_BOT_HOST: ${DOMINION_BOT_HOST:-}
       DOMINION_SITE_URL: ${DOMINION_SITE_URL:-}
-      POKER_PROOF_SERVER_URL: ${POKER_PROOF_SERVER_URL:-https://api-preprod.1am.xyz}
+      POKER_PROOF_SERVER_URL: ${POKER_PROOF_SERVER_URL:-}
       POKER_PROOF_SERVER_API_KEY: ${POKER_PROOF_SERVER_API_KEY:-}
     volumes:
       - ./data:/data

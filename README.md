@@ -3,27 +3,35 @@
 Run your own poker agent connected to Dominion. The companion manages local wallets
 and sends poker decisions to your chosen strategy: Starter, AI through OpenRouter,
 or a custom endpoint. Wallet recovery material and strategy secrets stay local.
-The companion currently supports Midnight preprod only.
+The companion supports Midnight Stagenet at https://dominion-stagenet.1am.xyz/.
+The former hosted preprod game has been retired.
 
 ## Release status
 
-`v0.1.0` is staged as a prerelease. Both Linux architectures are built and verified, but the
-organization currently disables public visibility for the GHCR package. An organization owner
-must enable public visibility before anonymous installation works. Until then, installation requires an account with access to the package and
-`docker login ghcr.io` before running the installer.
+`v0.2.0` is the Stagenet / Ledger 9 release for Linux AMD64 and ARM64.
+Both architectures passed native checks for encrypted wallet creation/unlock, address parity,
+Ledger 9 and card signatures, native engine loading, persisted wallets after restart, and live
+Stagenet pairing issuance. Full website approval, funded gameplay and payouts remain unverified.
+
+The GHCR package remains private. Installation requires an account with package access and
+`docker login ghcr.io`. Package visibility will be changed separately; this release does not
+make registry pulls public. Verified image archives are also attached to the release.
+Do not use the preprod-only `v0.1.0` image with the new site.
 
 ## Install
 
 ```sh
-curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.1.0/install.sh | sh
+curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.0/install.sh | sh
 ```
 
 The installer creates `~/dominion-bot`, downloads Compose pinned to the release image digest,
 and starts setup. Pair the code shown in the terminal with My Agents on Dominion, then complete
 wallet creation/import and backup locally. Wallet secrets never need to be entered on the website.
 
-Release `v0.1.0` includes the 1AM CLI `0.1.4`, built from wallet source
-`39e64c11748bbd892452656d15ba2e0dc816f6e2` with the patched ledger 8 and 9 WASMs.
+Release `v0.2.0` includes the 1AM CLI `0.1.4`, built from wallet source
+`78880a5675b3322d9f1e95aa046b7e6306b65cb3` with the patched ledger 8 and 9 WASMs.
+Companion runtime source: `03e2c0640091e3e78d6e77792cbe0a9b1e013a8a`, prepared with its
+Ledger 9 profile. Release assets include `BUILD-MANIFEST.json`, `VERIFICATION.json` and `SHA256SUMS`.
 Images support Linux AMD64 and ARM64, including Docker Desktop on macOS.
 
 This repository contains the installer and Compose deployment files. Companion source and builds
@@ -33,7 +41,7 @@ are maintained in the Dominion Midnight repository under `bot-companion/`.
 
 - macOS or Linux with Docker running and Docker Compose v2 installed.
 - Access to Dominion's My Agents page and its configured bot host.
-- A wallet funded with preprod NIGHT and usable DUST before playing.
+- A wallet funded with Stagenet NIGHT and usable DUST before playing.
 
 The public repository and image names are `webisoftSoftware/dominion-agent` and
 `ghcr.io/webisoftsoftware/dominion-agent`. The existing command is `dominion-bot`,
@@ -41,11 +49,12 @@ configuration uses `DOMINION_BOT_*`, and installation defaults to `~/dominion-bo
 
 ## Local installation
 
-Build `dominion-bot:local` from the companion source first, following its README.
+Build the Ledger 9 `dominion-bot:stagenet` image from the companion source first, following its README.
 Then, from this checkout, run:
 
 ```sh
 DOMINION_BOT_HOME="$HOME/dominion-agent-test" \
+DOMINION_BOT_IMAGE=dominion-bot:stagenet \
 DOMINION_BOT_HOST=http://host.docker.internal:8792 \
 DOMINION_SITE_URL=http://host.docker.internal:3003 \
 sh install.sh --local
@@ -80,15 +89,29 @@ Wallets and synced state live under `data/`; configuration and the wallet passwo
 live in the private `.env`. Owner strategy files live in `bot/`. Back up recovery
 phrases separately. Never commit installation data or secrets to this repository.
 
+## Moving from preprod
+
+Use a separate installation directory for Stagenet, for example
+`DOMINION_BOT_HOME="$HOME/dominion-bot-stagenet"` when running the new installer.
+Pair it again through My Agents on https://dominion-stagenet.1am.xyz/ and fund its wallet
+with Stagenet NIGHT and DUST. Preprod balances, pairing tokens and game journals do not
+transfer. Keep the old directory and recovery phrase as a backup; do not copy its `data/`
+into the new installation. Installer reruns preserve saved origins and Compose files, so
+rerunning the old installer does not perform this migration.
+
+The companion selects `https://api-stagenet.1am.xyz` for proving. Configure
+`POKER_PROOF_SERVER_API_KEY` in the installation's private `.env` when required by that service.
+
 ## Release maintenance
 
 Refresh `install.sh` and `compose.yml` from the source repository's `bot-companion/`
-directory. Change the installer's release URL to this repository and the Compose
+directory, using the generated `.stagenet/bot-companion/` files for a Ledger 9 release.
+Change the installer's release URL to this repository and the Compose
 image to `ghcr.io/webisoftsoftware/dominion-agent`. Keep runtime command and
 configuration names unchanged.
 
-Before publishing, build and test AMD64 and ARM64 images, make the GHCR package
-public, and verify an anonymous pull. Publish `install.sh` and `compose.yml` as
+Before publishing, build and test AMD64 and ARM64 images. Verify authenticated pulls while
+the package is private; verify anonymous pulls after its owner enables public visibility. Publish `install.sh` and `compose.yml` as
 assets of the same versioned release, with Compose pinned to that image's digest.
 Verify a clean install, pairing, wallet setup and restart before advertising it.
 Existing installations keep their Compose file; rerunning the installer does not
@@ -100,5 +123,5 @@ Release notes record the CLI build and image digest for each release.
 The publishing workflow uses `contents: read` and `packages: write`. Upload both verified image
 archives (`dominion-agent-amd64.tar.gz`, `dominion-agent-arm64.tar.gz`) and `SHA256SUMS` to a
 published prerelease, then dispatch `publish.yml` with its tag. Draft assets are hidden from the
-read-only token. After the images are public and anonymous pulls work, attach the installer and
-digest-pinned Compose file and promote the release to latest.
+read-only token. Attach the installer and digest-pinned Compose file to the same release. State its registry
+access requirements clearly; public image availability must be verified separately.

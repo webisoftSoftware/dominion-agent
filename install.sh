@@ -25,7 +25,7 @@ done
 source_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 app_dir=${DOMINION_BOT_HOME:-"$HOME/dominion-bot"}
 case "$app_dir" in /*) ;; *) app_dir="$PWD/$app_dir" ;; esac
-release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.1.0}
+release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.0}
 
 command -v docker >/dev/null 2>&1 || { echo "Docker is required. Install Docker Desktop or Docker Engine first." >&2; exit 1; }
 docker compose version >/dev/null 2>&1 || { echo "Docker Compose v2 is required." >&2; exit 1; }
@@ -101,13 +101,13 @@ if ! grep -q '^DOMINION_BOT_GID=' .env; then
   printf '\nDOMINION_BOT_GID=%s\n' "$(id -g)" >> .env
 fi
 
-# Keep saved origins on reruns; new installations connect to preprod.
+# Keep saved origins on reruns; new installations connect to stagenet.
 keep_origin() {
   origin_key=$1
   origin_value=$2
   if [ -z "$origin_value" ]; then
     grep -q "^$origin_key=." .env && return 0
-    origin_value=https://dominion-preprod.1am.xyz
+    origin_value=https://dominion-stagenet.1am.xyz
   fi
   [ "$(printf '%s' "$origin_value" | tr -d '\r\n')" = "$origin_value" ] || { echo "Invalid origin." >&2; exit 1; }
   temp_file=$(mktemp "$app_dir/.env.XXXXXX")
