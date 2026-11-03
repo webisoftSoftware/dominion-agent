@@ -13,9 +13,10 @@ Both architectures passed native checks for encrypted wallet creation/unlock, ad
 Ledger 9 and card signatures, native engine loading, persisted wallets after restart, and live
 Stagenet pairing issuance. Full website approval, funded gameplay and payouts remain unverified.
 
-The GHCR package remains private. Installation requires an account with package access and
-`docker login ghcr.io`. Package visibility will be changed separately; this release does not
-make registry pulls public. Verified image archives are also attached to the release.
+The public image is hosted on [Docker Hub](https://hub.docker.com/r/adglx/dominion-agent)
+as `adglx/dominion-agent`. Users do not need a Docker Hub account or registry login.
+The GHCR copy remains private under organization policy. Verified image archives are also
+attached to the release.
 Do not use the preprod-only `v0.1.0` image with the new site.
 
 ## Install
@@ -44,7 +45,7 @@ are maintained in the Dominion Midnight repository under `bot-companion/`.
 - A wallet funded with Stagenet NIGHT and usable DUST before playing.
 
 The public repository and image names are `webisoftSoftware/dominion-agent` and
-`ghcr.io/webisoftsoftware/dominion-agent`. The existing command is `dominion-bot`,
+`docker.io/adglx/dominion-agent`. The existing command is `dominion-bot`,
 configuration uses `DOMINION_BOT_*`, and installation defaults to `~/dominion-bot`.
 
 ## Local installation
@@ -107,11 +108,11 @@ The companion selects `https://api-stagenet.1am.xyz` for proving. Configure
 Refresh `install.sh` and `compose.yml` from the source repository's `bot-companion/`
 directory, using the generated `.stagenet/bot-companion/` files for a Ledger 9 release.
 Change the installer's release URL to this repository and the Compose
-image to `ghcr.io/webisoftsoftware/dominion-agent`. Keep runtime command and
+image to `docker.io/adglx/dominion-agent`. Keep runtime command and
 configuration names unchanged.
 
-Before publishing, build and test AMD64 and ARM64 images. Verify authenticated pulls while
-the package is private; verify anonymous pulls after its owner enables public visibility. Publish `install.sh` and `compose.yml` as
+Before publishing, build and test AMD64 and ARM64 images, then verify anonymous pulls
+from Docker Hub with an empty Docker credential configuration. Publish `install.sh` and `compose.yml` as
 assets of the same versioned release, with Compose pinned to that image's digest.
 Verify a clean install, pairing, wallet setup and restart before advertising it.
 Existing installations keep their Compose file; rerunning the installer does not
@@ -120,8 +121,14 @@ automatically advance a pinned image. Upgrade deliberately after games finish.
 See `docs/agent-distribution.md` in the source repository for the complete release process.
 Release notes record the CLI build and image digest for each release.
 
-The publishing workflow uses `contents: read` and `packages: write`. Upload both verified image
+The publishing workflow maintains the private GHCR mirror and uses `contents: read` and `packages: write`. Upload both verified image
 archives (`dominion-agent-amd64.tar.gz`, `dominion-agent-arm64.tar.gz`) and `SHA256SUMS` to a
 published prerelease, then dispatch `publish.yml` with its tag. Draft assets are hidden from the
 read-only token. Attach the installer and digest-pinned Compose file to the same release. State its registry
 access requirements clearly; public image availability must be verified separately.
+
+The Docker Hub mirror uses the same verified image contents. With a Docker Hub publisher login,
+retag the two architecture images as `adglx/dominion-agent:VERSION-ARCH`, push them, then create
+`VERSION` and `latest` with `docker buildx imagetools create`. Verify both platform digests and
+anonymous pulls before changing the Compose pin. No Docker Hub publishing credentials are
+configured in the GitHub workflow.
