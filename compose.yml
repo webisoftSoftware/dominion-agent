@@ -1,6 +1,6 @@
 services:
   companion:
-    image: ${DOMINION_BOT_IMAGE:-docker.io/adglx/dominion-agent@sha256:47316aef0180bc0a37f0cda408530015f74d592ec720e4b92cfe999d0d07c392}
+    image: ${DOMINION_BOT_IMAGE:-docker.io/adglx/dominion-agent@sha256:96fa006eb4c3e11e03e1743945acdc1568c9f17abda20f1bf534767d2030f0b9}
     restart: unless-stopped
     user: ${DOMINION_BOT_UID:-1000}:${DOMINION_BOT_GID:-1000}
     environment:

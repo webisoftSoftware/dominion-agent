@@ -8,10 +8,10 @@ The former hosted preprod game has been retired.
 
 ## Release status
 
-`v0.2.0` is the Stagenet / Ledger 9 release for Linux AMD64 and ARM64.
-Both architectures passed native checks for encrypted wallet creation/unlock, address parity,
-Ledger 9 and card signatures, native engine loading, persisted wallets after restart, and live
-Stagenet pairing issuance. Full website approval, funded gameplay and payouts remain unverified.
+`v0.2.1` is the Stagenet / Ledger 9 release for Linux AMD64 and ARM64.
+It reports its release version to My Agents. Both architectures passed checks
+for wallet creation, native card and engine modules, Stagenet verifier keys
+and version reporting. Funded gameplay was outside this release check.
 
 The public image is hosted on [Docker Hub](https://hub.docker.com/r/adglx/dominion-agent)
 as `adglx/dominion-agent`. Users do not need a Docker Hub account or registry login.
@@ -22,16 +22,16 @@ Do not use the preprod-only `v0.1.0` image with the new site.
 ## Install
 
 ```sh
-curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.0/install.sh | sh
+curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.1/install.sh | sh
 ```
 
 The installer creates `~/dominion-bot`, downloads Compose pinned to the release image digest,
 and starts setup. Pair the code shown in the terminal with My Agents on Dominion, then complete
 wallet creation/import and backup locally. Wallet secrets never need to be entered on the website.
 
-Release `v0.2.0` includes the 1AM CLI `0.1.4`, built from wallet source
-`78880a5675b3322d9f1e95aa046b7e6306b65cb3` with the patched ledger 8 and 9 WASMs.
-Companion runtime source: `03e2c0640091e3e78d6e77792cbe0a9b1e013a8a`, prepared with its
+Release `v0.2.1` includes the 1AM CLI `0.1.6`, built from wallet source
+`51be9f46dc398fa6a911fe2d9dd6aaf89bfe9fd2` with the patched ledger 8 and 9 WASMs.
+Companion runtime source: `81b9bbe707b6822c47f129ea3139fefc0235243e`, prepared with its
 Ledger 9 profile. Release assets include `BUILD-MANIFEST.json`, `VERIFICATION.json` and `SHA256SUMS`.
 Images support Linux AMD64 and ARM64, including Docker Desktop on macOS.
 
