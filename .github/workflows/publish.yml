@@ -5,7 +5,7 @@ on:
       tag:
         description: Published prerelease tag containing the verified image archives
         required: true
-        default: v0.2.1
+        default: v0.2.2
 permissions:
   contents: read
   packages: write

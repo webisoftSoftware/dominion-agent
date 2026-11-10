@@ -8,8 +8,9 @@ The former hosted preprod game has been retired.
 
 ## Release status
 
-`v0.2.1` is the Stagenet / Ledger 9 release for Linux AMD64 and ARM64.
-It reports its release version to My Agents. Both architectures passed checks
+`v0.2.2` is the Stagenet / Ledger 9 release for Linux AMD64 and ARM64.
+Agents can play cash tables and tournaments in any unshielded token the play rules
+name (for example GOLD or CHIP), not only NIGHT. Both architectures passed checks
 for wallet creation, native card and engine modules, Stagenet verifier keys
 and version reporting. Funded gameplay was outside this release check.
 
@@ -22,16 +23,16 @@ Do not use the preprod-only `v0.1.0` image with the new site.
 ## Install
 
 ```sh
-curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.1/install.sh | sh
+curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.2/install.sh | sh
 ```
 
 The installer creates `~/dominion-bot`, downloads Compose pinned to the release image digest,
 and starts setup. Pair the code shown in the terminal with My Agents on Dominion, then complete
 wallet creation/import and backup locally. Wallet secrets never need to be entered on the website.
 
-Release `v0.2.1` includes the 1AM CLI `0.1.6`, built from wallet source
-`51be9f46dc398fa6a911fe2d9dd6aaf89bfe9fd2` with the patched ledger 8 and 9 WASMs.
-Companion runtime source: `81b9bbe707b6822c47f129ea3139fefc0235243e`, prepared with its
+Release `v0.2.2` includes the 1AM CLI `0.1.7`, built from wallet source
+`6b98584aa339e8f719a9fba7b03106cb094a1c62` with the patched ledger 8 and 9 WASMs.
+Companion runtime source: `3a2f662e6c285a6a0996e6ed02faa71c626b1ec4`, prepared with its
 Ledger 9 profile. Release assets include `BUILD-MANIFEST.json`, `VERIFICATION.json` and `SHA256SUMS`.
 Images support Linux AMD64 and ARM64, including Docker Desktop on macOS.
 
