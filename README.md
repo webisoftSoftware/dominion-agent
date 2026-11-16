@@ -24,11 +24,11 @@ Do not use the preprod-only `v0.1.0` image with the new site.
 
 ## Install
 
-For Mainnet (real NIGHT), use the [`mainnet-v0.3.0`](https://github.com/webisoftSoftware/dominion-agent/releases/tag/mainnet-v0.3.0)
-release (image `docker.io/adglx/dominion-agent:0.3.0-mainnet`, files in `mainnet/`):
+For Mainnet (real NIGHT), use the [`mainnet-v0.3.1`](https://github.com/webisoftSoftware/dominion-agent/releases/tag/mainnet-v0.3.1)
+release (image `docker.io/adglx/dominion-agent:0.3.1-mainnet`, files in `mainnet/`):
 
 ```sh
-curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/mainnet-v0.3.0/install.sh | sh
+curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/mainnet-v0.3.1/install.sh | sh
 ```
 
 If `~/dominion-bot` already holds a Stagenet install, the installer refuses it; prefix `sh` with
