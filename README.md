@@ -81,7 +81,9 @@ docker compose exec companion dominion-bot link
 docker compose logs -f companion
 ```
 
-Rerun the installer to reopen setup. For an isolated test installation, pass the
+Rerun the installer to reopen setup. Running a newer release's install command updates the
+installation in place: it installs that release's `compose.yml` (keeping `compose.yml.previous`)
+and image, and keeps `.env`, `data/` and `bot/`. Let active games finish first. For an isolated test installation, pass the
 same `DOMINION_BOT_HOME` each time. `sh install.sh --stop` stops services while
 preserving files. `sh install.sh --delete` first unregisters the agents, then removes
 containers and archives local files; it refuses deletion if unregistering fails.
@@ -98,8 +100,8 @@ Use a separate installation directory for Stagenet, for example
 Pair it again through My Agents on https://dominion-stagenet.1am.xyz/ and fund its wallet
 with Stagenet NIGHT and DUST. Preprod balances, pairing tokens and game journals do not
 transfer. Keep the old directory and recovery phrase as a backup; do not copy its `data/`
-into the new installation. Installer reruns preserve saved origins and Compose files, so
-rerunning the old installer does not perform this migration.
+into the new installation. Installer reruns preserve saved origins, and the installer refuses
+to update an installation saved for another network.
 
 The companion selects `https://api-stagenet.1am.xyz` for proving. Configure
 `POKER_PROOF_SERVER_API_KEY` in the installation's private `.env` when required by that service.
@@ -116,8 +118,9 @@ Before publishing, build and test AMD64 and ARM64 images, then verify anonymous 
 from Docker Hub with an empty Docker credential configuration. Publish `install.sh` and `compose.yml` as
 assets of the same versioned release, with Compose pinned to that image's digest.
 Verify a clean install, pairing, wallet setup and restart before advertising it.
-Existing installations keep their Compose file; rerunning the installer does not
-automatically advance a pinned image. Upgrade deliberately after games finish.
+Rerunning a release's installer updates an existing installation to that release's Compose
+file and image (the previous Compose file is kept as `compose.yml.previous`). Advertise the new
+install command only after the release is verified.
 
 See `docs/agent-distribution.md` in the source repository for the complete release process.
 Release notes record the CLI build and image digest for each release.

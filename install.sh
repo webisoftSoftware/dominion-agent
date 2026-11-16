@@ -25,7 +25,7 @@ done
 source_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 app_dir=${DOMINION_BOT_HOME:-"$HOME/dominion-bot"}
 case "$app_dir" in /*) ;; *) app_dir="$PWD/$app_dir" ;; esac
-release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.2}
+release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.3}
 
 command -v docker >/dev/null 2>&1 || { echo "Docker is required. Install Docker Desktop or Docker Engine first." >&2; exit 1; }
 docker compose version >/dev/null 2>&1 || { echo "Docker Compose v2 is required." >&2; exit 1; }
@@ -79,16 +79,31 @@ mkdir -p "$app_dir/data" "$app_dir/bot"
 chmod 700 "$app_dir" "$app_dir/data" "$app_dir/bot"
 cd "$app_dir"
 
-if [ ! -f compose.yml ]; then
-  temp_file=$(mktemp "$app_dir/.compose.yml.XXXXXX")
-  trap 'rm -f "$temp_file"' 0 HUP INT TERM
-  if "$local_install"; then
-    cp "$source_dir/compose.yml" "$temp_file"
-  else
-    curl -fsSL "$release_url/compose.yml" -o "$temp_file"
-  fi
-  mv "$temp_file" compose.yml
+# An installation set up for another Dominion network keeps that network's state; never update it in place.
+default_origin=https://dominion-stagenet.1am.xyz
+saved_origin=$(sed -n 's/^DOMINION_BOT_HOST=//p' .env 2>/dev/null | tail -n 1)
+case "$saved_origin" in
+  "$default_origin"|"$default_origin"/*) ;;
+  https://dominion-*.1am.xyz|https://dominion-*.1am.xyz/*)
+    echo "$app_dir belongs to $saved_origin; this installer is for $default_origin." >&2
+    echo "Install into a new directory instead, for example DOMINION_BOT_HOME=\"\$HOME/dominion-bot-new\"." >&2
+    exit 1 ;;
+esac
+
+# Every run installs this release's Compose file, so rerunning the installer updates the companion.
+# Wallet and setup data live in data/, bot/ and .env; a replaced Compose file is kept as compose.yml.previous.
+temp_file=$(mktemp "$app_dir/.compose.yml.XXXXXX")
+trap 'rm -f "$temp_file"' 0 HUP INT TERM
+if "$local_install"; then
+  cp "$source_dir/compose.yml" "$temp_file"
+else
+  curl -fsSL "$release_url/compose.yml" -o "$temp_file"
 fi
+if [ -f compose.yml ] && ! cmp -s compose.yml "$temp_file"; then
+  cp -p compose.yml compose.yml.previous
+  echo "Updating the companion; the previous Compose file is saved as compose.yml.previous."
+fi
+mv "$temp_file" compose.yml
 
 if [ ! -f .env ]; then
   (umask 077 && : > .env)
@@ -107,7 +122,7 @@ keep_origin() {
   origin_value=$2
   if [ -z "$origin_value" ]; then
     grep -q "^$origin_key=." .env && return 0
-    origin_value=https://dominion-stagenet.1am.xyz
+    origin_value=$default_origin
   fi
   [ "$(printf '%s' "$origin_value" | tr -d '\r\n')" = "$origin_value" ] || { echo "Invalid origin." >&2; exit 1; }
   temp_file=$(mktemp "$app_dir/.env.XXXXXX")
@@ -126,12 +141,14 @@ if "$local_install"; then
   chmod 600 "$temp_file"
   mv "$temp_file" .env
 else
+  # Earlier release notes pinned the official image in .env, which would override this release's Compose file.
+  if grep -Eq '^DOMINION_BOT_IMAGE=(docker\.io/adglx|ghcr\.io/webisoftsoftware)/dominion-agent' .env; then
+    temp_file=$(mktemp "$app_dir/.env.XXXXXX")
+    grep -Ev '^DOMINION_BOT_IMAGE=(docker\.io/adglx|ghcr\.io/webisoftsoftware)/dominion-agent' .env > "$temp_file" || :
+    chmod 600 "$temp_file"
+    mv "$temp_file" .env
+  fi
   docker compose pull companion
-fi
-# Upgrade the original generated Compose file, keeping a copy and all wallet/strategy data.
-if "$local_install" && grep -q '"/bot/server.py"' compose.yml; then
-  cp -p compose.yml compose.yml.previous
-  cp "$source_dir/compose.yml" compose.yml
 fi
 docker compose up -d companion strategy
 viewer_status=0
