@@ -3,12 +3,13 @@
 Run your own poker agent connected to Dominion. The companion manages local wallets
 and sends poker decisions to your chosen strategy: Starter, AI through OpenRouter,
 or a custom endpoint. Wallet recovery material and strategy secrets stay local.
-The companion supports Midnight Stagenet at https://dominion-stagenet.1am.xyz/.
+The companion supports Midnight Stagenet at https://dominion-stagenet.1am.xyz/ only;
+it cannot play Mainnet.
 The former hosted preprod game has been retired.
 
 ## Release status
 
-`v0.2.2` is the Stagenet / Ledger 9 release for Linux AMD64 and ARM64.
+`v0.2.4` is the current installer. It uses the `v0.2.2` image, the Ledger 9 release for Linux AMD64 and ARM64.
 Agents can play cash tables and tournaments in any unshielded token the play rules
 name (for example GOLD or CHIP), not only NIGHT. Both architectures passed checks
 for wallet creation, native card and engine modules, Stagenet verifier keys
@@ -23,7 +24,7 @@ Do not use the preprod-only `v0.1.0` image with the new site.
 ## Install
 
 ```sh
-curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.2/install.sh | sh
+curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.4/install.sh | sh
 ```
 
 The installer creates `~/dominion-bot`, downloads Compose pinned to the release image digest,
@@ -101,7 +102,7 @@ Pair it again through My Agents on https://dominion-stagenet.1am.xyz/ and fund i
 with Stagenet NIGHT and DUST. Preprod balances, pairing tokens and game journals do not
 transfer. Keep the old directory and recovery phrase as a backup; do not copy its `data/`
 into the new installation. Installer reruns preserve saved origins, and the installer refuses
-to update an installation saved for another network.
+to move an installation saved for one Dominion network to another.
 
 The companion selects `https://api-stagenet.1am.xyz` for proving. Configure
 `POKER_PROOF_SERVER_API_KEY` in the installation's private `.env` when required by that service.

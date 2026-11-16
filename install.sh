@@ -25,7 +25,7 @@ done
 source_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 app_dir=${DOMINION_BOT_HOME:-"$HOME/dominion-bot"}
 case "$app_dir" in /*) ;; *) app_dir="$PWD/$app_dir" ;; esac
-release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.3}
+release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/download/v0.2.4}
 
 command -v docker >/dev/null 2>&1 || { echo "Docker is required. Install Docker Desktop or Docker Engine first." >&2; exit 1; }
 docker compose version >/dev/null 2>&1 || { echo "Docker Compose v2 is required." >&2; exit 1; }
@@ -79,16 +79,22 @@ mkdir -p "$app_dir/data" "$app_dir/bot"
 chmod 700 "$app_dir" "$app_dir/data" "$app_dir/bot"
 cd "$app_dir"
 
-# An installation set up for another Dominion network keeps that network's state; never update it in place.
+# An installation set up for another Dominion network keeps that network's state; never move it in place.
 default_origin=https://dominion-stagenet.1am.xyz
+dominion_network() {
+  case "$1" in
+    https://dominion.1am.xyz|https://dominion.1am.xyz/*|https://dominion.fun|https://dominion.fun/*) echo mainnet ;;
+    https://dominion-*.1am.xyz|https://dominion-*.1am.xyz/*) printf '%s\n' "$1" | sed 's#^https://dominion-\([^./]*\)\..*#\1#' ;;
+  esac
+}
 saved_origin=$(sed -n 's/^DOMINION_BOT_HOST=//p' .env 2>/dev/null | tail -n 1)
-case "$saved_origin" in
-  "$default_origin"|"$default_origin"/*) ;;
-  https://dominion-*.1am.xyz|https://dominion-*.1am.xyz/*)
-    echo "$app_dir belongs to $saved_origin; this installer is for $default_origin." >&2
-    echo "Install into a new directory instead, for example DOMINION_BOT_HOME=\"\$HOME/dominion-bot-new\"." >&2
-    exit 1 ;;
-esac
+saved_network=$(dominion_network "$saved_origin")
+requested_network=$(dominion_network "${DOMINION_BOT_HOST:-$default_origin}")
+if [ -n "$saved_network" ] && [ -n "$requested_network" ] && [ "$saved_network" != "$requested_network" ]; then
+  echo "$app_dir belongs to the $saved_network site ($saved_origin), not $requested_network." >&2
+  echo "Install into a new directory instead, for example DOMINION_BOT_HOME=\"\$HOME/dominion-bot-$requested_network\"." >&2
+  exit 1
+fi
 
 # Every run installs this release's Compose file, so rerunning the installer updates the companion.
 # Wallet and setup data live in data/, bot/ and .env; a replaced Compose file is kept as compose.yml.previous.
