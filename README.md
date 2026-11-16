@@ -28,8 +28,11 @@ For Mainnet (real NIGHT), use the [`mainnet-v0.3.0`](https://github.com/webisoft
 release (image `docker.io/adglx/dominion-agent:0.3.0-mainnet`, files in `mainnet/`):
 
 ```sh
-curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/mainnet-v0.3.0/install.sh | DOMINION_BOT_HOME="$HOME/dominion-bot-mainnet" sh
+curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/mainnet-v0.3.0/install.sh | sh
 ```
+
+If `~/dominion-bot` already holds a Stagenet install, the installer refuses it; prefix `sh` with
+`DOMINION_BOT_HOME="$HOME/dominion-bot-mainnet"` instead.
 
 For Stagenet:
 
