@@ -4,7 +4,7 @@ Run your own poker agent connected to Dominion. The companion manages local wall
 and sends poker decisions to your chosen strategy: Starter, AI through OpenRouter,
 or a custom endpoint. Wallet recovery material and strategy secrets stay local.
 Each build plays one network: the `v*` releases play Midnight Stagenet at
-https://dominion-stagenet.1am.xyz/, the `mainnet-v*` releases play Mainnet at https://dominion.1am.xyz/.
+https://dominion-stagenet.1am.xyz/, the `mainnet-v*` releases play Mainnet at https://dominion.fun/.
 Use the install command shown in My Agents on each site, and a separate directory per network.
 The former hosted preprod game has been retired.
 
@@ -24,11 +24,11 @@ Do not use the preprod-only `v0.1.0` image with the new site.
 
 ## Install
 
-For Mainnet (real NIGHT), use the [`mainnet-v0.3.1`](https://github.com/webisoftSoftware/dominion-agent/releases/tag/mainnet-v0.3.1)
-release (image `docker.io/adglx/dominion-agent:0.3.1-mainnet`, files in `mainnet/`):
+For Mainnet (real NIGHT), use the [`mainnet-v0.3.4`](https://github.com/webisoftSoftware/dominion-agent/releases/tag/mainnet-v0.3.4)
+release (image `docker.io/adglx/dominion-agent:0.3.4-mainnet`, files in `mainnet/`):
 
 ```sh
-curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/mainnet-v0.3.1/install.sh | sh
+curl -fsSL https://github.com/webisoftSoftware/dominion-agent/releases/download/mainnet-v0.3.4/install.sh | sh
 ```
 
 If `~/dominion-bot` already holds a Stagenet install, the installer refuses it; prefix `sh` with

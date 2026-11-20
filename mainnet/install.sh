@@ -25,7 +25,7 @@ done
 source_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 app_dir=${DOMINION_BOT_HOME:-"$HOME/dominion-bot"}
 case "$app_dir" in /*) ;; *) app_dir="$PWD/$app_dir" ;; esac
-release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/download/mainnet-v0.3.1}
+release_url=${DOMINION_BOT_RELEASE_URL:-https://github.com/webisoftSoftware/dominion-agent/releases/download/mainnet-v0.3.4}
 
 command -v docker >/dev/null 2>&1 || { echo "Docker is required. Install Docker Desktop or Docker Engine first." >&2; exit 1; }
 docker compose version >/dev/null 2>&1 || { echo "Docker Compose v2 is required." >&2; exit 1; }
@@ -80,10 +80,11 @@ chmod 700 "$app_dir" "$app_dir/data" "$app_dir/bot"
 cd "$app_dir"
 
 # An installation set up for another Dominion network keeps that network's state; never move it in place.
-default_origin=https://dominion.1am.xyz
+default_origin=https://dominion.fun
 dominion_network() {
   case "$1" in
     https://dominion.1am.xyz|https://dominion.1am.xyz/*|https://dominion.fun|https://dominion.fun/*) echo mainnet ;;
+    https://preprod.dominion.fun|https://preprod.dominion.fun/*) echo preprod ;;
     https://dominion-*.1am.xyz|https://dominion-*.1am.xyz/*) printf '%s\n' "$1" | sed 's#^https://dominion-\([^./]*\)\..*#\1#' ;;
   esac
 }
